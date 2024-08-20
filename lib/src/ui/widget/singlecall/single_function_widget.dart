@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +13,8 @@ import 'package:tencent_cloud_uikit_core/tencent_cloud_uikit_core.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
+import '../../../platform/tuicall_kit_platform_interface.dart';
+import '../../tuicall_navigator_observer.dart';
 import 'my_alert_dialog.dart';
 
 class SingleFunctionWidget {
@@ -312,7 +316,7 @@ class SingleFunctionWidget {
               okText: CallKit_t('goToSettings'),
               onCancel: SmartDialog.dismiss,
               onOk: () async{
-                _handleOpenBlurBackground();
+                _openFloatWindow();
                 await AppSettings.openAppSettings(asAnotherTask: true);
                 SmartDialog.dismiss();
               },
@@ -331,7 +335,7 @@ class SingleFunctionWidget {
               okText: CallKit_t('goToSettings'),
               onCancel: SmartDialog.dismiss,
               onOk: () async{
-                _handleOpenBlurBackground();
+               _openFloatWindow();
                 await AppSettings.openAppSettings(asAnotherTask: true);
                 SmartDialog.dismiss();
               },
@@ -379,6 +383,17 @@ class SingleFunctionWidget {
     }
     await CallManager.instance.switchCamera(CallState.instance.camera);
     TUICore.instance.notifyEvent(setStateEvent);
+  }
+
+ static void _openFloatWindow() async {
+    if (Platform.isAndroid) {
+      bool result = await TUICallKitPlatform.instance.hasFloatPermission();
+      if (!result) {
+        return;
+      }
+    }
+    TUICallKitNavigatorObserver.getInstance().exitCallingPage();
+    CallManager.instance.openFloatWindow();
   }
 
   static Color _getTextColor() {
