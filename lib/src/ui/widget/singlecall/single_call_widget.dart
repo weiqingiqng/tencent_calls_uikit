@@ -264,7 +264,7 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
       width: MediaQuery.of(context).size.width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [SingleFunctionWidget.buildFunctionWidget(widget.close)],
+        children: [SingleFunctionWidget.buildFunctionWidget(widget.close,context)],
       ),
     );
   }

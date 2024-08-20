@@ -20,6 +20,9 @@ dependencies:
   tencent_calls_engine: ">=2.3.2 <2.4.0"
   tencent_cloud_uikit_core: ^1.6.3
   tencent_cloud_chat_sdk: any
+  permission_handler: ^11.3.1
+  app_settings: ^5.1.1
+  flutter_smart_dialog: ^4.9.4
 
 dev_dependencies:
   flutter_test:

@@ -544,6 +544,8 @@ class _StringsEn {
   String get k_0000102 => 'Blur Background';
 
   String get k_0000103 => 'Show blur background';
+
+  String get k_0000104 => 'Hint';
 }
 
 // Path: <root>
@@ -878,6 +880,9 @@ class _StringsJa implements _StringsEn {
 
   @override
   String get k_0000103 => '背景をぼかす';
+
+  @override
+  String get k_0000104 => 'ヒント';
 }
 
 // Path: <root>
@@ -1209,6 +1214,9 @@ class _StringsZhHans implements _StringsEn {
 
   @override
   String get k_0000103 => '显示模糊背景按钮';
+
+  @override
+  String get k_0000104 => '提示';
 }
 
 /// Flat map(s) containing all translations.
@@ -1326,6 +1334,7 @@ extension on _StringsEn {
       "k_0000101": "Switch Camera",
       "k_0000102": "Blur Background",
       "k_0000103": "Show blur background",
+      "k_0000104": "Hint",
     };
   }
 }
@@ -1439,6 +1448,7 @@ extension on _StringsJa {
       "k_0000101": "カメラの切り替え",
       "k_0000102": "背景をぼかす",
       "k_0000103": "背景をぼかす",
+      "k_0000104": "ヒント",
     };
   }
 }
@@ -1550,6 +1560,7 @@ extension on _StringsZhHans {
       "k_0000101": "翻转",
       "k_0000102": "模糊背景",
       "k_0000103": "显示模糊背景按钮",
+      "k_0000104": "提示",
     };
   }
 }
