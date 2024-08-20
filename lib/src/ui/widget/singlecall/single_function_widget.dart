@@ -305,43 +305,47 @@ class SingleFunctionWidget {
   static _handleAccept(BuildContext context) async {
     if (CallState.instance.mediaType == TUICallMediaType.video) {
       if (!await Permission.camera.isGranted || !await Permission.microphone.isGranted) {
-        final result = await SmartDialog.show<bool>(
+        SmartDialog.show(
           builder: (context) {
             return MyAlertDialog(
               content: CallKit_t('needToAccessMicrophoneAndCameraPermissions'),
               okText: CallKit_t('goToSettings'),
               onCancel: SmartDialog.dismiss,
               onOk: () async{
+                _handleOpenBlurBackground();
                 await AppSettings.openAppSettings(asAnotherTask: true);
-                SmartDialog.dismiss(result: true);
+                SmartDialog.dismiss();
               },
             );
           },
         );
-        if (!(result ?? false)) {
-          return;
-        }
+      }else{
+        _acceptCall();
       }
     } else {
       if (!await Permission.microphone.isGranted) {
-        final result = await SmartDialog.show<bool>(
+        SmartDialog.show(
           builder: (context) {
             return MyAlertDialog(
               content: CallKit_t('needToAccessMicrophonePermission'),
               okText: CallKit_t('goToSettings'),
               onCancel: SmartDialog.dismiss,
               onOk: () async{
+                _handleOpenBlurBackground();
                 await AppSettings.openAppSettings(asAnotherTask: true);
-                SmartDialog.dismiss(result: true);
+                SmartDialog.dismiss();
               },
             );
           },
         );
-        if (!(result ?? false)) {
-          return;
-        }
+      }else{
+        _acceptCall();
       }
     }
+
+  }
+
+  static _acceptCall() async{
     await CallManager.instance.accept();
     CallState.instance.selfUser.callStatus = TUICallStatus.accept;
     TUICore.instance.notifyEvent(setStateEvent);
