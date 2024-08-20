@@ -47,7 +47,7 @@ class MyAlertDialog extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  title ?? CallKit_t('hint'),
+                  title ?? '提示',
                   style: const TextStyle(
                     color: Color(0xFF333333),
                     fontSize: 20,
