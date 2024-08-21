@@ -154,7 +154,7 @@ class SingleFunctionWidget {
               textColor: _getTextColor(),
               imgHeight: 60,
               onTap: () {
-                _handleAccept(context);
+                _handleAccept(close,context);
               },
             ),
           ],
@@ -306,7 +306,7 @@ class SingleFunctionWidget {
     close();
   }
 
-  static _handleAccept(BuildContext context) async {
+  static _handleAccept(Function close,BuildContext context) async {
     final cameraStatus = await Permission.camera.request();
     if (CallState.instance.mediaType == TUICallMediaType.video) {
       final microStatus = await Permission.microphone.request();
@@ -318,6 +318,7 @@ class SingleFunctionWidget {
               okText: CallKit_t('goToSettings'),
               onCancel: SmartDialog.dismiss,
               onOk: () async{
+                _handleReject(close);
                 await AppSettings.openAppSettings();
                 SmartDialog.dismiss();
               },
@@ -336,6 +337,7 @@ class SingleFunctionWidget {
               okText: CallKit_t('goToSettings'),
               onCancel: SmartDialog.dismiss,
               onOk: () async{
+                _handleReject(close);
                 await AppSettings.openAppSettings();
                 SmartDialog.dismiss();
               },
@@ -385,16 +387,6 @@ class SingleFunctionWidget {
     TUICore.instance.notifyEvent(setStateEvent);
   }
 
- static void _openFloatWindow() async {
-    if (Platform.isAndroid) {
-      bool result = await TUICallKitPlatform.instance.hasFloatPermission();
-      if (!result) {
-        return;
-      }
-    }
-    TUICallKitNavigatorObserver.getInstance().exitCallingPage();
-    CallManager.instance.openFloatWindow();
-  }
 
   static Color _getTextColor() {
     return Colors.white;

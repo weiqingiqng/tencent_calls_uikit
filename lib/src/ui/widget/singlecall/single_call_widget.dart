@@ -27,8 +27,7 @@ class SingleCallWidget extends StatefulWidget {
   State<StatefulWidget> createState() => _SingleCallWidgetState();
 }
 
-class _SingleCallWidgetState extends State<SingleCallWidget>
-    with WidgetsBindingObserver {
+class _SingleCallWidgetState extends State<SingleCallWidget> {
   ITUINotificationCallback? setSateCallBack;
   bool _hadShowAcceptText = false;
   bool _isShowAcceptText = false;
@@ -64,25 +63,12 @@ class _SingleCallWidgetState extends State<SingleCallWidget>
       }
     };
     TUICore.instance.registerEvent(setStateEvent, setSateCallBack);
-    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   dispose() {
     super.dispose();
     TUICore.instance.unregisterEvent(setStateEvent, setSateCallBack);
-    WidgetsBinding.instance.removeObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    print('state == $state');
-    if (state == AppLifecycleState.inactive &&
-        TUICallStatus.waiting == CallState.instance.selfUser.callStatus &&
-        TUICallRole.called == CallState.instance.selfUser.callRole) {
-      _openFloatWindow();
-    }
   }
 
   @override
