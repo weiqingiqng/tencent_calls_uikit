@@ -27,7 +27,8 @@ class SingleCallWidget extends StatefulWidget {
   State<StatefulWidget> createState() => _SingleCallWidgetState();
 }
 
-class _SingleCallWidgetState extends State<SingleCallWidget> {
+class _SingleCallWidgetState extends State<SingleCallWidget>
+    with WidgetsBindingObserver {
   ITUINotificationCallback? setSateCallBack;
   bool _hadShowAcceptText = false;
   bool _isShowAcceptText = false;
@@ -50,7 +51,8 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
           : CallState.instance.remoteUserList[0].key,
       onPlatformViewCreated: (viewId) {
         CallState.instance.remoteUserList[0].viewID = viewId;
-        CallManager.instance.startRemoteView(CallState.instance.remoteUserList[0].id, viewId);
+        CallManager.instance
+            .startRemoteView(CallState.instance.remoteUserList[0].id, viewId);
       });
 
   @override
@@ -62,34 +64,53 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
       }
     };
     TUICore.instance.registerEvent(setStateEvent, setSateCallBack);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   dispose() {
     super.dispose();
     TUICore.instance.unregisterEvent(setStateEvent, setSateCallBack);
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    print('state == $state');
+    if (state == AppLifecycleState.inactive &&
+        TUICallStatus.waiting == CallState.instance.selfUser.callStatus &&
+        TUICallRole.called == CallState.instance.selfUser.callRole) {
+      _openFloatWindow();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          color: _getBackgroundColor(),
-          child: Stack(
-            alignment: Alignment.topLeft,
-            fit: StackFit.expand,
-            children: [
-              _buildBackground(),
-              _buildBigVideoWidget(),
-              _isOnlyShowBigVideoView ? const SizedBox() : _buildSmallVideoWidget(),
-              _isOnlyShowBigVideoView ? const SizedBox() : _buildFloatingWindowBtnWidget(),
-              _isOnlyShowBigVideoView ? const SizedBox() : _buildTimerWidget(),
-              _isOnlyShowBigVideoView ? const SizedBox() : _buildUserInfoWidget(),
-              _isOnlyShowBigVideoView ? const SizedBox() : _buildHintTextWidget(),
-              _isOnlyShowBigVideoView ? const SizedBox() : _buildFunctionButtonWidget(),
-            ],
-          ),
+        color: _getBackgroundColor(),
+        child: Stack(
+          alignment: Alignment.topLeft,
+          fit: StackFit.expand,
+          children: [
+            _buildBackground(),
+            _buildBigVideoWidget(),
+            _isOnlyShowBigVideoView
+                ? const SizedBox()
+                : _buildSmallVideoWidget(),
+            _isOnlyShowBigVideoView
+                ? const SizedBox()
+                : _buildFloatingWindowBtnWidget(),
+            _isOnlyShowBigVideoView ? const SizedBox() : _buildTimerWidget(),
+            _isOnlyShowBigVideoView ? const SizedBox() : _buildUserInfoWidget(),
+            _isOnlyShowBigVideoView ? const SizedBox() : _buildHintTextWidget(),
+            _isOnlyShowBigVideoView
+                ? const SizedBox()
+                : _buildFunctionButtonWidget(),
+          ],
         ),
+      ),
     );
   }
 
@@ -213,7 +234,10 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
   }
 
   _buildHintTextWidget() {
-    bool isWaiting = CallState.instance.selfUser.callStatus == TUICallStatus.waiting ? true : false;
+    bool isWaiting =
+        CallState.instance.selfUser.callStatus == TUICallStatus.waiting
+            ? true
+            : false;
 
     if (CallState.instance.selfUser.callRole == TUICallRole.caller &&
         CallState.instance.selfUser.callStatus == TUICallStatus.accept &&
@@ -243,14 +267,18 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
                             ? CallKit_t("invitedToAudioCall")
                             : CallKit_t("invitedToVideoCall"),
                     style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w400, color: _getTextColor()),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: _getTextColor()),
                   )
                 : const SizedBox(),
             _isShowAcceptText
                 ? Text(
                     CallKit_t('connected'),
                     style: TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w600, color: _getTextColor()),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: _getTextColor()),
                   )
                 : const SizedBox(),
           ],
@@ -264,7 +292,9 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
       width: MediaQuery.of(context).size.width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [SingleFunctionWidget.buildFunctionWidget(widget.close,context)],
+        children: [
+          SingleFunctionWidget.buildFunctionWidget(widget.close, context)
+        ],
       ),
     );
   }
@@ -275,10 +305,11 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
     if (CallState.instance.remoteUserList.isNotEmpty) {
       remoteAvatar = StringStream.makeNull(
           CallState.instance.remoteUserList[0].avatar, Constants.defaultAvatar);
-      remoteVideoAvailable = CallState.instance.remoteUserList[0].videoAvailable;
+      remoteVideoAvailable =
+          CallState.instance.remoteUserList[0].videoAvailable;
     }
-    var selfAvatar =
-        StringStream.makeNull(CallState.instance.selfUser.avatar, Constants.defaultAvatar);
+    var selfAvatar = StringStream.makeNull(
+        CallState.instance.selfUser.avatar, Constants.defaultAvatar);
     var isCameraOpen = CallState.instance.isCameraOpen;
 
     if (CallState.instance.mediaType == TUICallMediaType.audio) {
@@ -309,19 +340,24 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
                 children: [
                   CallState.instance.selfUser.callStatus == TUICallStatus.accept
                       ? Visibility(
-                          visible: (isLocalViewBig ? !isCameraOpen : !remoteVideoAvailable),
+                          visible: (isLocalViewBig
+                              ? !isCameraOpen
+                              : !remoteVideoAvailable),
                           child: Center(
                               child: Container(
                             height: 80,
                             width: 80,
                             clipBehavior: Clip.hardEdge,
                             decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
                             ),
                             child: Image(
-                              image: NetworkImage(isLocalViewBig ? selfAvatar : remoteAvatar),
+                              image: NetworkImage(
+                                  isLocalViewBig ? selfAvatar : remoteAvatar),
                               fit: BoxFit.cover,
-                              errorBuilder: (ctx, err, stackTrace) => Image.asset(
+                              errorBuilder: (ctx, err, stackTrace) =>
+                                  Image.asset(
                                 'assets/images/user_icon.png',
                                 package: 'tencent_calls_uikit',
                               ),
@@ -333,7 +369,8 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
                       opacity: isLocalViewBig
                           ? _getOpacityByVis(isCameraOpen)
                           : _getOpacityByVis(remoteVideoAvailable),
-                      child: isLocalViewBig ? _localVideoView : _remoteVideoView)
+                      child:
+                          isLocalViewBig ? _localVideoView : _remoteVideoView)
                 ],
               ),
             ))
@@ -361,62 +398,70 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
     if (CallState.instance.remoteUserList.isNotEmpty) {
       remoteAvatar = StringStream.makeNull(
           CallState.instance.remoteUserList[0].avatar, Constants.defaultAvatar);
-      remoteVideoAvailable = CallState.instance.remoteUserList[0].videoAvailable;
-      remoteAudioAvailable = CallState.instance.remoteUserList[0].audioAvailable;
+      remoteVideoAvailable =
+          CallState.instance.remoteUserList[0].videoAvailable;
+      remoteAudioAvailable =
+          CallState.instance.remoteUserList[0].audioAvailable;
     }
-    var selfAvatar =
-        StringStream.makeNull(CallState.instance.selfUser.avatar, Constants.defaultAvatar);
+    var selfAvatar = StringStream.makeNull(
+        CallState.instance.selfUser.avatar, Constants.defaultAvatar);
     var isCameraOpen = CallState.instance.isCameraOpen;
 
-    var smallVideoWidget = CallState.instance.selfUser.callStatus == TUICallStatus.accept
-        ? Container(
-            height: 216,
-            width: 110,
-            color: Colors.black54,
-            child: Stack(
-              alignment: AlignmentDirectional.center,
-              children: [
-                Visibility(
-                  visible: (isRemoteViewSmall ? !remoteVideoAvailable : !isCameraOpen),
-                  child: Center(
-                    child: Container(
-                      height: 80,
-                      width: 80,
-                      clipBehavior: Clip.hardEdge,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                      ),
-                      child: Image(
-                        image: NetworkImage(isRemoteViewSmall ? remoteAvatar : selfAvatar),
-                        fit: BoxFit.cover,
-                        errorBuilder: (ctx, err, stackTrace) => Image.asset(
-                          'assets/images/user_icon.png',
-                          package: 'tencent_calls_uikit',
+    var smallVideoWidget =
+        CallState.instance.selfUser.callStatus == TUICallStatus.accept
+            ? Container(
+                height: 216,
+                width: 110,
+                color: Colors.black54,
+                child: Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: [
+                    Visibility(
+                      visible: (isRemoteViewSmall
+                          ? !remoteVideoAvailable
+                          : !isCameraOpen),
+                      child: Center(
+                        child: Container(
+                          height: 80,
+                          width: 80,
+                          clipBehavior: Clip.hardEdge,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                          ),
+                          child: Image(
+                            image: NetworkImage(
+                                isRemoteViewSmall ? remoteAvatar : selfAvatar),
+                            fit: BoxFit.cover,
+                            errorBuilder: (ctx, err, stackTrace) => Image.asset(
+                              'assets/images/user_icon.png',
+                              package: 'tencent_calls_uikit',
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-                Opacity(
-                    opacity: isRemoteViewSmall
-                        ? _getOpacityByVis(remoteVideoAvailable)
-                        : _getOpacityByVis(isCameraOpen),
-                    child: isRemoteViewSmall ? _remoteVideoView : _localVideoView),
-                Positioned(
-                  left: 5,
-                  bottom: 5,
-                  width: 20,
-                  height: 20,
-                  child: (isRemoteViewSmall && !remoteAudioAvailable)
-                      ? Image.asset(
-                          'assets/images/audio_unavailable_grey.png',
-                          package: 'tencent_calls_uikit',
-                        )
-                      : const SizedBox(),
-                )
-              ],
-            ))
-        : Container();
+                    Opacity(
+                        opacity: isRemoteViewSmall
+                            ? _getOpacityByVis(remoteVideoAvailable)
+                            : _getOpacityByVis(isCameraOpen),
+                        child: isRemoteViewSmall
+                            ? _remoteVideoView
+                            : _localVideoView),
+                    Positioned(
+                      left: 5,
+                      bottom: 5,
+                      width: 20,
+                      height: 20,
+                      child: (isRemoteViewSmall && !remoteAudioAvailable)
+                          ? Image.asset(
+                              'assets/images/audio_unavailable_grey.png',
+                              package: 'tencent_calls_uikit',
+                            )
+                          : const SizedBox(),
+                    )
+                  ],
+                ))
+            : Container();
 
     return Positioned(
         top: _smallViewTop - 40,
@@ -458,7 +503,8 @@ class _SingleCallWidgetState extends State<SingleCallWidget> {
     }
 
     setState(() {
-      CallState.instance.isChangedBigSmallVideo = !CallState.instance.isChangedBigSmallVideo;
+      CallState.instance.isChangedBigSmallVideo =
+          !CallState.instance.isChangedBigSmallVideo;
     });
   }
 

@@ -307,8 +307,10 @@ class SingleFunctionWidget {
   }
 
   static _handleAccept(BuildContext context) async {
+    final cameraStatus = await Permission.camera.request();
     if (CallState.instance.mediaType == TUICallMediaType.video) {
-      if (!await Permission.camera.isGranted || !await Permission.microphone.isGranted) {
+      final microStatus = await Permission.microphone.request();
+      if (!microStatus.isGranted || !cameraStatus.isGranted) {
         SmartDialog.show(
           builder: (context) {
             return MyAlertDialog(
@@ -316,8 +318,7 @@ class SingleFunctionWidget {
               okText: CallKit_t('goToSettings'),
               onCancel: SmartDialog.dismiss,
               onOk: () async{
-                _openFloatWindow();
-                await AppSettings.openAppSettings(asAnotherTask: true);
+                await AppSettings.openAppSettings();
                 SmartDialog.dismiss();
               },
             );
@@ -327,7 +328,7 @@ class SingleFunctionWidget {
         _acceptCall();
       }
     } else {
-      if (!await Permission.microphone.isGranted) {
+      if (!cameraStatus.isGranted) {
         SmartDialog.show(
           builder: (context) {
             return MyAlertDialog(
@@ -335,8 +336,7 @@ class SingleFunctionWidget {
               okText: CallKit_t('goToSettings'),
               onCancel: SmartDialog.dismiss,
               onOk: () async{
-               _openFloatWindow();
-                await AppSettings.openAppSettings(asAnotherTask: true);
+                await AppSettings.openAppSettings();
                 SmartDialog.dismiss();
               },
             );
