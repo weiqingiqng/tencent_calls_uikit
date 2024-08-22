@@ -314,13 +314,14 @@ class SingleFunctionWidget {
         SmartDialog.show(
           builder: (context) {
             return MyAlertDialog(
+              title: CallKit_t('applyForMicrophoneAndCameraPermissions'),
               content: CallKit_t('needToAccessMicrophoneAndCameraPermissions'),
               okText: CallKit_t('goToSettings'),
               onCancel: SmartDialog.dismiss,
               onOk: () async{
+                await  SmartDialog.dismiss();
                 _handleReject(close);
                 await AppSettings.openAppSettings();
-                SmartDialog.dismiss();
               },
             );
           },
@@ -333,13 +334,14 @@ class SingleFunctionWidget {
         SmartDialog.show(
           builder: (context) {
             return MyAlertDialog(
+              title: CallKit_t('applyForMicrophonePermission'),
               content: CallKit_t('needToAccessMicrophonePermission'),
               okText: CallKit_t('goToSettings'),
               onCancel: SmartDialog.dismiss,
               onOk: () async{
+                await SmartDialog.dismiss();
                 _handleReject(close);
                 await AppSettings.openAppSettings();
-                SmartDialog.dismiss();
               },
             );
           },
