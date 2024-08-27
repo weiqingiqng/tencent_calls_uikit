@@ -307,9 +307,9 @@ class SingleFunctionWidget {
   }
 
   static _handleAccept(Function close,BuildContext context) async {
-    final cameraStatus = await Permission.camera.request();
+    final microStatus = await Permission.microphone.request();
     if (CallState.instance.mediaType == TUICallMediaType.video) {
-      final microStatus = await Permission.microphone.request();
+      final cameraStatus = await Permission.camera.request();
       if (!microStatus.isGranted || !cameraStatus.isGranted) {
         SmartDialog.show(
           builder: (context) {
@@ -330,7 +330,7 @@ class SingleFunctionWidget {
         _acceptCall();
       }
     } else {
-      if (!cameraStatus.isGranted) {
+      if (!microStatus.isGranted) {
         SmartDialog.show(
           builder: (context) {
             return MyAlertDialog(
