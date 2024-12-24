@@ -12,7 +12,7 @@ class OfflinePushInfoConfig {
     // OPPO must set ChannelID to receive push messages. If the console is configured, no call is required in the code
     // OPPO must set a ChannelID to receive push messages. If you set it on the console, you don't need set here.
     // pushInfo.setAndroidOPPOChannelID("tuikit");
-    pushInfo.ignoreIOSBadge = false;
+    pushInfo.ignoreIOSBadge = true;
     pushInfo.iOSSound = "phone_ringing.mp3";
     pushInfo.androidSound = "phone_ringing";
     //VIVO message type: 0-push message, 1-System message(have a higher delivery rate)
